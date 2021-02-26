@@ -4,7 +4,7 @@ import edu.princeton.cs.algs4.StdOut;
 public class Client {
     public static void main(String[] args) {
         int N = StdIn.readInt();
-        QuickFindUF quickFindUF = new QuickFindUF(N);
+        WeightedQuickUnionUF quickFindUF = new WeightedQuickUnionUF(N);
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();
