@@ -4,6 +4,7 @@
  *  Last modified:     1/1/2019
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
@@ -51,5 +52,11 @@ public class PercolationStats {
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
         return mean() + (1.96 * Math.sqrt(stddev()) / Math.sqrt(thresholds.length));
+    }
+
+    public static void main(String[] args) {
+        int n = StdIn.readInt();
+        int T = StdIn.readInt();
+        
     }
 }
