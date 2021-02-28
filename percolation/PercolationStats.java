@@ -4,15 +4,27 @@
  *  Last modified:     1/1/2019
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
-public class PercolationStats {
-    private double[] thresholds;
 
-    // perform independent trials on an n-by-n grid
-    public PercolationStats(int n, int trials) {
+public class PercolationStats {
+    /** constant number. */
+    private static final double STDCONST = 1.96;
+    /** records each trial's p value. */
+    private final double[] thresholds;
+
+    /**
+     * perform independent trials on an n-by-n grid.
+     *
+     * @param n      grid size
+     * @param trials number of trials
+     */
+    public PercolationStats(final int n, final int trials) {
+        if (n <= 0 || trials <= 0) {
+            throw new IllegalArgumentException();
+        }
         thresholds = new double[trials];
         for (int i = 0; i < trials; i++) {
             // initialize all sites (to be blocked)
@@ -24,6 +36,10 @@ public class PercolationStats {
                 int targetRow = StdRandom.uniform(n) + 1;
                 int targetCol = StdRandom.uniform(n) + 1;
                 // opens the site
+                while (percolation.isOpen(targetRow, targetCol)) {
+                    targetRow = StdRandom.uniform(n) + 1;
+                    targetCol = StdRandom.uniform(n) + 1;
+                }
                 percolation.open(targetRow, targetCol);
                 count++;
             }
@@ -34,29 +50,59 @@ public class PercolationStats {
         }
     }
 
-    // sample mean of percolation threshold
+    /**
+     * sample mean of percolation threshold.
+     *
+     * @return sample mean of percolation threshold
+     */
     public double mean() {
         return StdStats.mean(thresholds);
     }
 
-    // sample standard deviation of percolation threshold
+    /**
+     * calculates sample standard deviation of percolation threshold.
+     *
+     * @return sample standard deviation of percolation threshold
+     */
     public double stddev() {
         return StdStats.stddev(thresholds);
     }
 
-    // low endpoint of 95% confidence interval
+    /**
+     * calculates low endpoint of 95% confidence interval.
+     *
+     * @return low endpoint of 95% confidence interval
+     */
     public double confidenceLo() {
-        return mean() - (1.96 * Math.sqrt(stddev()) / Math.sqrt(thresholds.length));
+        return mean()
+                - (STDCONST * Math.sqrt(stddev()) / Math.sqrt(thresholds.length));
     }
 
-    // high endpoint of 95% confidence interval
+    /**
+     * calculates high endpoint of 95% confidence interval.
+     *
+     * @return high endpoint of 95% confidence interval
+     */
     public double confidenceHi() {
-        return mean() + (1.96 * Math.sqrt(stddev()) / Math.sqrt(thresholds.length));
+        return mean()
+                + (STDCONST * Math.sqrt(stddev()) / Math.sqrt(thresholds.length));
     }
 
-    public static void main(String[] args) {
-        int n = StdIn.readInt();
-        int T = StdIn.readInt();
-        
+    /**
+     * main function.
+     *
+     * @param args input
+     */
+    public static void main(final String[] args) {
+        int n = Integer.parseInt(args[0]);
+        int trials = Integer.parseInt(args[1]);
+        PercolationStats percolationStats = new PercolationStats(n, trials);
+        StdOut.printf("mean                    = %f%n",
+                      percolationStats.mean());
+        StdOut.printf("stddev                  = %f%n",
+                      percolationStats.stddev());
+        StdOut.printf("95%% confidence interval = [%f, %f]%n",
+                      percolationStats.confidenceLo(),
+                      percolationStats.confidenceHi());
     }
 }
